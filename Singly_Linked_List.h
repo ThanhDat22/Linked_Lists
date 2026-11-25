@@ -17,6 +17,10 @@ public:
     // Destructor: release the dynamically allocated memory
     virtual ~Singly_Linked_List();
 
+    // Getters
+    Node<T>* get_head() const; // Returns a pointer to the head of the list
+    Node<T>* get_tail() const; // Returns a pointer to the tail of the list
+
     // Operator
     const Singly_Linked_List<T>& operator=(const Singly_Linked_List<T>&); // Deep-copy assignment operator
 
@@ -34,6 +38,7 @@ public:
     void pop_front(); // Removes the first element of the list
     void push_back(const T&); // Inserts an element at the back of the list
     void pop_back(); // Removes the last element of the list
+    void pop(const T&); // Removes the first occurrence of a specified element in the list
     void push_after(const T&, const T&); // Inserts an element after a specified element in the list
     void pop_after(const T&); // Removes the element after a specified element in the list
     void push_before(const T&, const T&); // Inserts an element before a specified element in the list
@@ -70,6 +75,16 @@ Singly_Linked_List<T>::Node::Node(const T& data) : data(data), next(nullptr) {}
 // Default constructor
 template <class T>
 Singly_Linked_List<T>::Singly_Linked_List() : head(nullptr), tail(nullptr), num_of_nodes(0) {} 
+
+// Getters
+template <class T>
+typename Singly_Linked_List<T>::Node* Singly_Linked_List<T>::get_head() const {
+    return head;
+}
+template <class T>
+typename Singly_Linked_List<T>::Node* Singly_Linked_List<T>::get_tail() const {
+    return tail;
+}
 
 // Copy constructor
 template <class T>
@@ -128,7 +143,7 @@ bool Singly_Linked_List<T>::empty() const {
 template <class T>
 T& Singly_Linked_List<T>::front() {
     if (empty()) {
-        throw std::out_of_range("List is empty");
+        throw out_of_range("List is empty");
     }
     return head->data;
 } // Time complexity: O(1)
@@ -137,7 +152,7 @@ T& Singly_Linked_List<T>::front() {
 template <class T>
 const T& Singly_Linked_List<T>::front() const {
     if (empty()) {
-        throw std::out_of_range("List is empty");
+        throw out_of_range("List is empty");
     }
     return head->data;
 } // Time complexity: O(1)
@@ -146,7 +161,7 @@ const T& Singly_Linked_List<T>::front() const {
 template <class T>
 T& Singly_Linked_List<T>::back() {
     if (empty()) {
-        throw std::out_of_range("List is empty");
+        throw out_of_range("List is empty");
     }
     return tail->data;
 } // Time complexity: O(1)
@@ -155,12 +170,40 @@ T& Singly_Linked_List<T>::back() {
 template <class T>
 const T& Singly_Linked_List<T>::back() const {
     if (empty()) {
-        throw std::out_of_range("List is empty");
+        throw out_of_range("List is empty");
     }
     return tail->data;
 } // Time complexity: O(1)
 
+template <class T>
+void Singly_Linked_List<T>::pop(const T& value) {
+    if (empty()) {
+        throw out_of_range("List is empty");
+    }
 
+    // If the head node contains the value to be removed
+    if (head->data == value) {
+        pop_front(); // Remove the head node
+        return;
+    }
+
+    Node* current = head;
+    while (current->next) {
+        if (current->next->data == value) {
+            Node* temp = current->next; // Store the node to be deleted
+            current->next = temp->next; // Link the current node to the node after the target
+
+            if (temp == tail) { // If the target node is the tail, update the tail
+                tail = current;
+            }
+
+            delete temp; // Delete the target node
+            --num_of_nodes; // Decrement the number of nodes
+            return; // Return after deletion
+        }
+        current = current->next; // Move to the next node
+    }
+} // Time complexity: O(n)
 
 
 
@@ -188,7 +231,7 @@ void Singly_Linked_List<T>::push_front(const T& value) {
 template <class T>
 void Singly_Linked_List<T>::pop_front() {
     if (empty()) {
-        throw std::out_of_range("List is empty");
+        throw out_of_range("List is empty");
     }
     Node* temp = head; // Store the current head
     head = head->next; // Move head to the next node
@@ -224,7 +267,7 @@ void Singly_Linked_List<T>::push_back(const T& value) {
 template <class T>
 void Singly_Linked_List<T>::pop_back() {
     if (empty()) {
-        throw std::out_of_range("List is empty");
+        throw out_of_range("List is empty");
     }
     if (head == tail) { // If there's only one node
         delete head; // Delete the only node

@@ -1,22 +1,25 @@
-#include "Singly_Linked_List.h"
+#include "Algorithms.h"
+#include "Node.h"
 
+#include <string>
 #include <vector>
 
 using namespace std;
 
 int main() {
 
-    vector<string> data = {"Mom", "Bin", "Quay", "Chi Le", "Phuong Anh", "Bai Bai", "Hoa Thanh", "Thuy Duong"};
-
-    Singly_Linked_List<string> list;
-    for (size_t i = 0; i < data.size(); ++i) {
-        list.push_back(data[i]);
+    vector<int> vec = {3, 5, 9};
+    Node<int>* head = nullptr;
+    for (const auto& item : vec) {
+        Algorithms<int>::insert_back(head, item);
     }
 
-    //algorithms.make_circular(head,string("Bin"));
-    
+    Algorithms<int>::print_list(head);
 
-    cout << list << endl;
-    
+    Algorithms<int>::remove_first_occurrence(head, 2);
+    Algorithms<int>::print_list(head);
+
+
+
     return 0;
 }
